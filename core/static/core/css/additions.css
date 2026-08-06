@@ -1,0 +1,64 @@
+/* =========================================================
+   ADD-ON STYLES
+   I don't have your existing style.css, so these are meant to be
+   pasted into it (or linked as a second stylesheet after it).
+   Adjust colors/fonts to match your existing variables
+   (--muted, --font-mono, etc. reused below).
+   ========================================================= */
+
+/* --- Card photo ---
+   Moved into style.css directly (next to .ticket-stub) so there's
+   only one file defining .ticket-photo-link — no risk of this file
+   not being linked, or loading in the wrong order. --- */
+
+/* --- Save / bookmark button --- */
+.stamp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid currentColor;
+  background: transparent;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.stamp-icon {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: fill 0.2s ease;
+}
+
+.stamp-btn.is-saved {
+  background-color: currentColor;
+}
+.stamp-btn.is-saved .stamp-icon {
+  fill: white;
+  stroke: white;
+}
+.stamp-btn.is-saved .stamp-label {
+  color: white;
+}
+
+.stamp-btn.is-loading {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* the little "pop" when a save/unsave lands */
+@keyframes stampPop {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.25); }
+  60%  { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+.stamp-btn.stamp-pop {
+  animation: stampPop 0.35s ease;
+}

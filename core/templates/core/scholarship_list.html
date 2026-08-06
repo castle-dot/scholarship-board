@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Scholarships{% endblock %}
+
+{% block content %}
+
+  <section class="hero">
+    <span class="eyebrow">DEPARTURES</span>
+    <h1>Find your next scholarship</h1>
+    <p>Every open opportunity, sorted by how soon it closes. Search, filter, and save the ones worth boarding.</p>
+  </section>
+
+  <form class="lookup" method="get">
+    <div class="lookup-grid">
+      <div class="field">
+        <label for="q">Search</label>
+        <input type="text" id="q" name="q" placeholder="title, university…" value="{{ query }}">
+      </div>
+
+      <div class="field">
+        <label for="level">Level</label>
+        <select id="level" name="level">
+          <option value="">Any</option>
+          {% for level in levels %}
+            <option value="{{ level.id }}" {% if level.id|stringformat:"s" == selected_level %}selected{% endif %}>{{ level.label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="funding_type">Funding</label>
+        <select id="funding_type" name="funding_type">
+          <option value="">Any</option>
+          {% for value, label in funding_types %}
+            <option value="{{ value }}" {% if value == selected_funding_type %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="country">Country</label>
+        <select id="country" name="country">
+          <option value="">Any</option>
+          {% for country in countries %}
+            <option value="{{ country.id }}" {% if country.id|stringformat:"s" == selected_country %}selected{% endif %}>{{ country.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <button type="submit">Search</button>
+    </div>
+  </form>
+
+  <div class="ticket-grid">
+    {% for scholarship in page_obj %}
+      <article class="ticket">
+        <a href="{% url 'scholarship-detail' scholarship.slug %}" class="ticket-photo-link">
+          {% if scholarship.logo %}
+            <img class="ticket-photo" src="{{ scholarship.logo.url }}" alt="{{ scholarship.university }} logo">
+          {% else %}
+            <div class="ticket-photo ticket-photo-placeholder" aria-hidden="true">{{ scholarship.university|slice:":1" }}</div>
+          {% endif %}
+        </a>
+
+        <div class="ticket-body">
+          <span class="route">{{ scholarship.university }}</span>
+          <h2><a href="{% url 'scholarship-detail' scholarship.slug %}">{{ scholarship.title }}</a></h2>
+
+          <div class="tag-row">
+            {% for level in scholarship.levels.all %}
+              <span class="badge level">{{ level.label }}</span>
+            {% endfor %}
+            <span class="badge funded">{{ scholarship.get_funding_type_display }}</span>
+            <span class="badge deadline">CLOSES {{ scholarship.deadline|date:"d M Y" }}</span>
+            {% if not scholarship.application_fee_required %}
+              <span class="badge">No fee</span>
+            {% endif %}
+          </div>
+
+          <div class="ticket-footer">
+            <span class="barcode" aria-hidden="true"></span>
+            <a class="view-link" href="{% url 'scholarship-detail' scholarship.slug %}">View ticket →</a>
+
+            {% if user.is_authenticated %}
+              {% include "core/_save_button.html" with scholarship=scholarship saved_ids=saved_ids %}
+            {% endif %}
+          </div>
+        </div>
+      </article>
+    {% empty %}
+      <div class="empty-state">No scholarships match that search. Try clearing a filter.</div>
+    {% endfor %}
+  </div>
+
+  {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}&q={{ query }}&level={{ selected_level }}&funding_type={{ selected_funding_type }}&country={{ selected_country }}">← Prev</a>
+      {% endif %}
+
+      <span class="current">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&q={{ query }}&level={{ selected_level }}&funding_type={{ selected_funding_type }}&country={{ selected_country }}">Next →</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+
+{% endblock %}

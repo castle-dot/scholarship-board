@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Scholarships{% endblock %}</title>
+
+  <!-- Sets the theme BEFORE the page paints, so there's no flash of the
+       wrong colors. Must stay inline and non-deferred, right here. -->
+  <script>
+    (function () {
+      const stored = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.setAttribute("data-theme", stored || (prefersDark ? "dark" : "light"));
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <a href="{% url 'scholarship-list' %}" class="wordmark">
+        <span class="eyebrow">NOW BOARDING</span>
+        <span class="title">Scholarship Board</span>
+      </a>
+
+      {# ============================================================ #}
+{# REPLACES the <nav class="site-nav"> ... </nav> block in       #}
+{# base.html. Same URLs, cleaner structure: 3 tabs + one avatar  #}
+{# dropdown instead of 6+ separate items crammed in a row.       #}
+{# ============================================================ #}
+
+<nav class="site-nav">
+  <div class="nav-links">
+    <a href="{% url 'scholarship-list' %}" class="nav-link {% if request.resolver_match.url_name == 'scholarship-list' %}active{% endif %}">Browse</a>
+    <a href="{% url 'story-list' %}" class="nav-link {% if 'story' in request.resolver_match.url_name %}active{% endif %}">Stories</a>
+    <a href="{% url 'question-list' %}" class="nav-link {% if 'question' in request.resolver_match.url_name %}active{% endif %}">Q&amp;A</a>
+  </div>
+
+  <div class="nav-actions">
+    <button type="button" id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle dark mode">
+      <span class="icon-light">🌙</span>
+      <span class="icon-dark">☀️</span>
+    </button>
+
+    {% if user.is_authenticated %}
+      <div class="notif-bell" id="notif-bell">
+        <button type="button" class="bell-btn" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">
+          🔔
+          {% if unread_count > 0 %}<span class="bell-badge">{{ unread_count }}</span>{% endif %}
+        </button>
+
+        <div class="notif-dropdown" id="notif-dropdown" style="display:none;">
+          <div class="notif-dropdown-header">
+            <span>Notifications</span>
+            {% if unread_count > 0 %}
+              <form method="post" action="{% url 'notifications-mark-all-read' %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="mark-all-btn">Mark all read</button>
+              </form>
+            {% endif %}
+          </div>
+
+          {% for note in unread_notifications %}
+            <a class="notif-item {% if not note.is_read %}unread{% endif %}" href="{% url 'notification-read' note.pk %}">
+              <span class="notif-message">{{ note.message }}</span>
+              <span class="notif-time">{{ note.created_at|timesince }} ago</span>
+            </a>
+          {% empty %}
+            <div class="notif-empty">You're all caught up.</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="account-menu" id="account-menu">
+        <button type="button" class="account-btn" aria-haspopup="true" aria-expanded="false" aria-label="Account menu">
+          {{ user.username|first|upper }}
+        </button>
+        <div class="account-dropdown" id="account-dropdown" style="display:none;">
+          <a href="{% url 'profile' %}">Profile</a>
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Log out</button>
+          </form>
+        </div>
+      </div>
+    {% else %}
+      <a href="{% url 'login' %}" class="nav-link">Log in</a>
+      <a href="{% url 'signup' %}" class="nav-link nav-cta">Sign up</a>
+    {% endif %}
+  </div>
+</nav>
+    </div>
+  </header>
+
+  {% if messages %}
+    <ul class="messages container">
+      {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <span class="footer-wordmark">Scholarship Board</span>
+        <p class="footer-tagline">Find your next departure.</p>
+      </div>
+
+      <div class="footer-col">
+        <span class="footer-heading">Explore</span>
+        <a href="{% url 'scholarship-list' %}">Browse</a>
+        <a href="{% url 'story-list' %}">Success Stories</a>
+        <a href="{% url 'question-list' %}">Q&amp;A</a>
+      </div>
+
+      <div class="footer-col">
+        <span class="footer-heading">Contact</span>
+        <a href="https://t.me/hinn_tt" target="_blank" rel="noopener noreferrer">t.me/hinn_tt</a>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      &copy; {% now "Y" %} Kaleb. All rights reserved.
+    </div>
+  </footer>
+
+  <script src="{% static 'core/js/save-button.js' %}"></script>
+  <script src="{% static 'core/js/notifications.js' %}"></script>
+  <script src="{% static 'core/js/theme-toggle.js' %}"></script>
+</body>
+</html>

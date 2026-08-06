@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Q&A{% endblock %}
+
+{% block content %}
+
+  <section class="hero">
+    <span class="eyebrow">HELP DESK</span>
+    <h1>Ask &amp; answer</h1>
+    <p>Stuck on an application, or wondering if a scholarship is worth it? Ask here — anyone can chip in.</p>
+  </section>
+
+  {% if user.is_authenticated %}
+    <div class="detail-actions">
+      <a class="board-btn" href="{% url 'question-create' %}">Ask a question →</a>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <a href="{% url 'login' %}">Log in</a> to ask or answer a question.
+    </div>
+  {% endif %}
+
+  <div class="ticket-grid">
+    {% for question in page_obj %}
+      <article class="ticket">
+        <div class="ticket-body">
+          <span class="route">
+            {{ question.author.username }} · {{ question.created_at|date:"d M Y" }}
+            {% if question.scholarship %} · re: {{ question.scholarship.title }}{% endif %}
+          </span>
+          <h2><a href="{% url 'question-detail' question.pk %}">{{ question.title }}</a></h2>
+          <p class="excerpt">{{ question.body|truncatewords:25 }}</p>
+
+          <div class="ticket-footer">
+            <span class="barcode" aria-hidden="true"></span>
+            <a class="view-link" href="{% url 'question-detail' question.pk %}">
+              {{ question.reply_count }} repl{{ question.reply_count|pluralize:"y,ies" }} →
+            </a>
+          </div>
+        </div>
+      </article>
+    {% empty %}
+      <div class="empty-state">No questions yet. Ask the first one.</div>
+    {% endfor %}
+  </div>
+
+  {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">← Prev</a>
+      {% endif %}
+      <span class="current">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next →</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+
+{% endblock %}

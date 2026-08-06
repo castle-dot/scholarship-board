@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Success Stories{% endblock %}
+
+{% block content %}
+
+  <section class="hero">
+    <span class="eyebrow">ARRIVALS</span>
+    <h1>Success stories</h1>
+    <p>Real people, real scholarships. Read how others got there — or share your own.</p>
+  </section>
+
+  {% if user.is_authenticated %}
+    <div class="detail-actions">
+      <a class="board-btn" href="{% url 'story-create' %}">Share your story →</a>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <a href="{% url 'login' %}">Log in</a> to share your own success story.
+    </div>
+  {% endif %}
+
+  <div class="ticket-grid">
+    {% for story in page_obj %}
+      <article class="ticket">
+        <div class="ticket-body">
+          <span class="route">{{ story.author.username }} · {{ story.created_at|date:"d M Y" }}</span>
+          <h2><a href="{% url 'story-detail' story.pk %}">{{ story.title }}</a></h2>
+          <p class="excerpt">{{ story.story|truncatewords:30 }}</p>
+
+          <div class="ticket-footer">
+            <span class="barcode" aria-hidden="true"></span>
+            <a class="view-link" href="{% url 'story-detail' story.pk %}">Read story →</a>
+          </div>
+        </div>
+      </article>
+    {% empty %}
+      <div class="empty-state">No stories yet. Be the first to share one.</div>
+    {% endfor %}
+  </div>
+
+  {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">← Prev</a>
+      {% endif %}
+      <span class="current">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next →</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+
+{% endblock %}

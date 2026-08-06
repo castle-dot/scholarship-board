@@ -1,0 +1,662 @@
+/* ==========================================================================
+   Scholarship Board — complete stylesheet
+   REPLACE YOUR ENTIRE style.css WITH THIS FILE.
+   ========================================================================== */
+
+:root {
+  --paper: #F1EFE9;
+  --card: #FAF9F5;
+  --stub: #ECE7DA;
+  --ink: #202B26;
+  --muted: #6B7A73;
+  --line: #D8D3C6;
+  --stamp: #B5432E;
+  --gold: #B98B33;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  --radius: 14px;
+}
+
+/* Dark mode — same variable names, different values. Toggled via
+   [data-theme="dark"] on <html>, set by the inline script in <head>
+   and theme-toggle.js */
+[data-theme="dark"] {
+  --paper: #1B211D;
+  --card: #242C27;
+  --stub: #2C352F;
+  --ink: #F1EFE9;
+  --muted: #94A49B;
+  --line: #3A443C;
+  --stamp: #E2775F;
+  --gold: #D9AE5C;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+a { color: inherit; }
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* -------------------------------------------------------------------- */
+/* Header + nav                                                          */
+/* -------------------------------------------------------------------- */
+
+.site-header {
+  border-bottom: 2px solid var(--ink);
+  padding: 20px 0;
+}
+
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+}
+
+.wordmark .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--stamp);
+  font-weight: 600;
+}
+
+.wordmark .title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+}
+
+.nav-divider { color: var(--line); }
+
+.nav-link {
+  text-decoration: none;
+  color: var(--muted);
+  padding: 4px 2px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-link:hover, .nav-link:focus-visible { color: var(--ink); }
+
+.nav-link.active {
+  color: var(--ink);
+  border-bottom-color: var(--stamp);
+  font-weight: 600;
+}
+
+.nav-link.nav-cta {
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  padding: 5px 14px;
+}
+.nav-link.nav-cta:hover { background: var(--ink); color: var(--paper); }
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.inline-form { display: inline; }
+
+.nav-link.as-button {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  padding: 4px 2px;
+  color: var(--muted);
+}
+.nav-link.as-button:hover { color: var(--ink); border-bottom-color: var(--stamp); }
+
+/* -------------------------------------------------------------------- */
+/* Theme toggle                                                          */
+/* -------------------------------------------------------------------- */
+
+.theme-toggle-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px dashed var(--muted);
+  background: transparent;
+  cursor: pointer;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.theme-toggle-btn:hover { border-color: var(--ink); transform: scale(1.05); }
+.theme-toggle-btn .icon-dark { display: none; }
+[data-theme="dark"] .theme-toggle-btn .icon-light { display: none; }
+[data-theme="dark"] .theme-toggle-btn .icon-dark { display: inline; }
+
+/* -------------------------------------------------------------------- */
+/* Notification bell + dropdown                                          */
+/* -------------------------------------------------------------------- */
+
+.notif-bell { position: relative; }
+
+.bell-btn {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px dashed var(--muted);
+  background: transparent;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.bell-btn:hover { border-color: var(--ink); transform: scale(1.05); }
+
+.bell-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--stamp);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.notif-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 300px;
+  max-height: 360px;
+  overflow-y: auto;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  z-index: 50;
+}
+
+.notif-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px dashed var(--line);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.mark-all-btn {
+  background: none;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--stamp);
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.notif-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: var(--ink);
+  border-bottom: 1px dashed var(--line);
+  border-left: 3px solid transparent;
+  font-size: 13px;
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: var(--stub); }
+.notif-item.unread { border-left-color: var(--stamp); font-weight: 600; }
+
+.notif-message { font-family: var(--font-body); line-height: 1.35; }
+.notif-time { font-family: var(--font-mono); font-size: 10px; color: var(--muted); font-weight: 400; }
+.notif-empty { padding: 24px 16px; text-align: center; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+
+@media (max-width: 640px) {
+  .notif-dropdown { position: fixed; top: auto; right: 12px; left: 12px; width: auto; }
+}
+
+/* -------------------------------------------------------------------- */
+/* Messages                                                               */
+/* -------------------------------------------------------------------- */
+
+.messages { list-style: none; margin: 20px auto 0; padding: 0; max-width: 1080px; }
+.messages li {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 10px 16px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  margin-bottom: 8px;
+}
+.messages li.success { border-color: var(--gold); }
+.messages li.info { border-color: var(--muted); }
+.messages li.error, .messages li.warning { border-color: var(--stamp); color: var(--stamp); }
+
+/* -------------------------------------------------------------------- */
+/* Hero                                                                   */
+/* -------------------------------------------------------------------- */
+
+.hero { padding: 48px 0 32px; }
+.hero .eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; color: var(--stamp); font-weight: 600; }
+.hero h1 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 42px); margin: 6px 0 8px; letter-spacing: -0.01em; }
+.hero p { color: var(--muted); max-width: 55ch; }
+
+/* -------------------------------------------------------------------- */
+/* Filter/search panel                                                   */
+/* -------------------------------------------------------------------- */
+
+.lookup { border: 1px dashed var(--line); border-radius: var(--radius); background: var(--card); padding: 20px 24px; margin-bottom: 40px; }
+.lookup-grid { display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 16px; align-items: end; }
+@media (max-width: 800px) { .lookup-grid { grid-template-columns: 1fr 1fr; } }
+.field label { display: block; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 6px; }
+.field input, .field select {
+  width: 100%; font-family: var(--font-mono); font-size: 13px; padding: 10px;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink);
+}
+.field input:focus-visible, .field select:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+.lookup button {
+  font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.06em; padding: 10px 18px;
+  background: var(--ink); color: var(--paper); border: none; border-radius: 8px; cursor: pointer; white-space: nowrap;
+}
+.lookup button:hover { background: var(--stamp); }
+
+/* -------------------------------------------------------------------- */
+/* Ticket card (scholarship list)                                        */
+/* -------------------------------------------------------------------- */
+
+.ticket-grid { display: grid; gap: 24px; margin-bottom: 40px; }
+
+.ticket {
+  position: relative; display: flex; min-height: 168px; background: var(--card);
+  border-radius: var(--radius); box-shadow: 0 1px 0 var(--line); overflow: visible;
+}
+
+.ticket-stub {
+  position: relative; width: 88px; flex-shrink: 0; background: var(--stub);
+  border-radius: var(--radius) 0 0 var(--radius); display: flex; align-items: center; justify-content: center;
+}
+.stub-inner { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.stub-logo { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid var(--line); }
+
+.ticket-stub .level-tag {
+  font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+  color: var(--ink); transform: rotate(-90deg); white-space: nowrap;
+}
+
+.ticket-stub::after {
+  content: ""; position: absolute; top: 12px; bottom: 12px; right: 0; border-right: 2px dashed var(--line);
+}
+
+/* Scholarship card photo (list page) — same fixed-width, full-height
+   column pattern as .ticket-stub above, so an oversized upload gets
+   cropped into the box instead of stretching the row. */
+.ticket-photo-link {
+  display: block; width: 96px; flex-shrink: 0; align-self: stretch;
+  border-radius: var(--radius) 0 0 var(--radius); overflow: hidden; background: var(--stub);
+}
+.ticket-photo {
+  width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;
+}
+.ticket-photo-placeholder {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--muted);
+}
+
+.ticket::before, .ticket::after {
+  content: ""; position: absolute; left: 76px; width: 20px; height: 20px; border-radius: 50%; background: var(--paper);
+}
+.ticket::before { top: -10px; }
+.ticket::after { bottom: -10px; }
+
+.ticket-body { flex: 1; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.ticket-body .route { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; }
+.ticket-body h2, .ticket-body h1.title { font-family: var(--font-display); font-size: 20px; margin: 0; letter-spacing: -0.01em; }
+.ticket-body h2 a { text-decoration: none; }
+.ticket-body h2 a:hover { text-decoration: underline; }
+
+.tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+.badge { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink); }
+.badge.funded { border-color: var(--gold); color: var(--gold); }
+.badge.deadline { border-color: var(--stamp); color: var(--stamp); }
+
+.ticket-footer { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.barcode { height: 24px; flex: 1; max-width: 140px; background: repeating-linear-gradient(90deg, var(--ink) 0px, var(--ink) 2px, transparent 2px, transparent 5px); opacity: 0.55; }
+.view-link { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; text-decoration: none; border-bottom: 1px solid var(--ink); }
+
+/* save button ("stamp") */
+.stamp-form { display: inline-flex; }
+.stamp-btn {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+  width: 46px; height: 46px; border-radius: 50%; border: 2px dashed var(--muted); background: transparent;
+  color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  text-align: center; line-height: 1.1; transition: transform 0.15s ease;
+}
+.stamp-btn:hover { transform: scale(1.05); }
+.stamp-btn.is-saved { border-style: solid; border-color: var(--stamp); color: var(--stamp); transform: rotate(-8deg); }
+.stamp-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+@keyframes stamp-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.35); }
+  70% { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+.stamp-btn.just-stamped { animation: stamp-pop 0.35s ease; }
+
+/* -------------------------------------------------------------------- */
+/* Scholarship detail                                                     */
+/* -------------------------------------------------------------------- */
+
+.big-ticket { display: flex; background: var(--card); border-radius: var(--radius); box-shadow: 0 1px 0 var(--line); margin: 32px 0; position: relative; }
+.big-ticket .ticket-stub { width: 120px; }
+.big-ticket .ticket-stub .level-tag { font-size: 14px; }
+.big-ticket::before, .big-ticket::after { left: 108px; }
+.big-ticket .ticket-body { padding: 28px 32px; gap: 12px; }
+.big-ticket .ticket-body h1.title { font-size: 30px; }
+
+.briefing { border-top: 1px dashed var(--line); padding-top: 24px; margin-bottom: 40px; }
+.briefing h3 { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
+.briefing p { max-width: 68ch; }
+
+.board-btn {
+  display: inline-block; font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.06em;
+  padding: 12px 22px; background: var(--ink); color: var(--paper); border-radius: 8px; text-decoration: none;
+}
+.board-btn:hover { background: var(--stamp); }
+
+.detail-actions { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+
+/* -------------------------------------------------------------------- */
+/* Profile                                                                */
+/* -------------------------------------------------------------------- */
+
+.profile-card { border: 1px dashed var(--line); border-radius: var(--radius); background: var(--card); padding: 24px; margin-bottom: 32px; }
+.profile-card .name { font-family: var(--font-display); font-size: 22px; }
+.profile-card .meta { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+.stub-row { display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--line); }
+.stub-row .index { font-family: var(--font-mono); font-size: 12px; color: var(--muted); width: 24px; }
+.stub-row .info { flex: 1; min-width: 0; }
+.stub-row .info h4 { margin: 0 0 2px; font-family: var(--font-display); font-size: 16px; }
+.stub-row .info .route { font-size: 11px; }
+
+/* -------------------------------------------------------------------- */
+/* Empty states + pagination                                             */
+/* -------------------------------------------------------------------- */
+
+.empty-state { border: 1px dashed var(--line); border-radius: var(--radius); padding: 40px 24px; text-align: center; color: var(--muted); font-family: var(--font-mono); font-size: 13px; }
+
+.pagination { display: flex; justify-content: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; margin-bottom: 60px; }
+.pagination a, .pagination span { padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; }
+.pagination .current { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* -------------------------------------------------------------------- */
+/* Auth pages                                                             */
+/* -------------------------------------------------------------------- */
+
+.auth-wrap { display: flex; justify-content: center; padding: 48px 0 80px; }
+.auth-card { width: 100%; max-width: 380px; border: 1px dashed var(--line); border-radius: var(--radius); background: var(--card); padding: 32px; }
+.auth-card .eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--stamp); font-weight: 600; }
+.auth-card h1 { font-family: var(--font-display); font-size: 26px; margin: 6px 0 20px; letter-spacing: -0.01em; }
+.auth-card form .field { margin-bottom: 16px; }
+.auth-card .helptext { display: block; font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 4px; }
+.auth-card .errorlist { list-style: none; margin: 4px 0 0; padding: 0; font-family: var(--font-mono); font-size: 11px; color: var(--stamp); }
+.auth-card .submit-btn { width: 100%; font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.06em; padding: 12px; background: var(--ink); color: var(--paper); border: none; border-radius: 8px; cursor: pointer; margin-top: 8px; }
+.auth-card .submit-btn:hover { background: var(--stamp); }
+.auth-card .switch-line { margin-top: 20px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); text-align: center; }
+.auth-card .switch-line a { color: var(--ink); border-bottom: 1px solid var(--ink); text-decoration: none; }
+
+/* -------------------------------------------------------------------- */
+/* Threads — question detail / success story detail / scholarship detail */
+/* -------------------------------------------------------------------- */
+
+.thread-eyebrow {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
+  color: var(--stamp); font-weight: 600; display: inline-block; margin: 24px 0 0;
+}
+
+/* The main post — deliberately NOT boxed like a reply/comment, so it
+   reads as the primary content instead of looking like one more comment.
+   One identity line (avatar + name + time), then title, then body. */
+.op-post { margin: 14px 0 36px; }
+.op-post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.op-post-meta { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.op-post-meta .thread-name { font-size: 16px; }
+.op-post-context {
+  font-family: var(--font-mono); font-size: 12px; color: var(--muted);
+  margin: -4px 0 14px 60px;
+}
+.op-post-context a { color: var(--ink); border-bottom: 1px solid var(--line); text-decoration: none; }
+.op-title { font-family: var(--font-display); font-size: 26px; margin: 0 0 10px; letter-spacing: -0.01em; }
+.op-body { margin: 0; font-size: 16px; line-height: 1.6; }
+.op-post .tag-row { margin: 4px 0 14px; }
+
+.section-heading { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
+
+/* Twitter/Facebook-style thread items: avatar + bold name + faint time,
+   each in its own card so it's unmistakably separate from the next one */
+.thread-avatar {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%;
+  background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 700; font-size: 14px; overflow: hidden;
+}
+.thread-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.thread-avatar.lg { width: 48px; height: 48px; font-size: 18px; }
+
+.reply-row, .comment-row {
+  display: flex; gap: 12px; padding: 14px 16px; margin-bottom: 10px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+}
+
+.thread-content { flex: 1; min-width: 0; }
+
+.thread-name-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+.thread-name { font-family: var(--font-display); font-weight: 700; font-size: 14px; color: var(--ink); }
+.thread-time { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+.op-badge {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em; color: var(--stamp);
+  border: 1px solid var(--stamp); border-radius: 999px; padding: 1px 7px;
+}
+
+.thread-text { margin: 0; font-size: 14px; line-height: 1.5; color: var(--ink); }
+
+.empty-line { font-family: var(--font-mono); font-size: 12px; color: var(--muted); padding: 8px 0; }
+.empty-line a { color: var(--ink); border-bottom: 1px solid var(--ink); text-decoration: none; }
+
+.simple-form { display: flex; flex-direction: column; gap: 8px; max-width: 520px; margin: 16px 0 48px; }
+.simple-form textarea {
+  width: 100%; font-family: var(--font-body); font-size: 13px; padding: 10px;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); resize: vertical; min-height: 60px;
+}
+.simple-form textarea:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+.submit-btn-sm {
+  align-self: flex-start; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em;
+  padding: 8px 16px; background: var(--ink); color: var(--paper); border: none; border-radius: 8px; cursor: pointer;
+}
+.submit-btn-sm:hover { background: var(--stamp); }
+
+/* -------------------------------------------------------------------- */
+/* Footer                                                                 */
+/* -------------------------------------------------------------------- */
+
+.site-footer {
+  border-top: 2px solid var(--ink); margin-top: 40px; padding: 36px 0 24px;
+  font-family: var(--font-mono); font-size: 12px; color: var(--muted);
+}
+
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 24px; padding-bottom: 28px;
+}
+@media (max-width: 640px) { .footer-grid { grid-template-columns: 1fr; gap: 20px; } }
+
+.footer-col { display: flex; flex-direction: column; gap: 8px; }
+.footer-wordmark { font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--ink); }
+.footer-tagline { margin: 0; color: var(--muted); }
+.footer-heading {
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); font-weight: 600; margin-bottom: 2px;
+}
+.footer-col a { color: var(--muted); text-decoration: none; }
+.footer-col a:hover { color: var(--ink); border-bottom: 1px solid var(--ink); }
+
+.footer-bottom {
+  border-top: 1px dashed var(--line); padding-top: 16px; font-size: 11px; letter-spacing: 0.02em;
+}
+
+/* ==========================================================================
+   Image safety net — prevents any <img> anywhere on the site (scholarship
+   logos, future avatars, anything) from ever overflowing its container and
+   pushing the layout around, no matter what size the original file is.
+   ========================================================================== */
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.stub-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.big-ticket .stub-logo {
+  width: 56px;
+  height: 56px;
+}
+
+/* -------------------------------------------------------------------- */
+/* Redesigned nav — 3 tabs + a single account/avatar dropdown            */
+/* -------------------------------------------------------------------- */
+
+.account-menu {
+  position: relative;
+}
+
+.account-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+.account-btn:hover { transform: scale(1.05); }
+
+.account-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 180px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  z-index: 50;
+  overflow: hidden;
+}
+
+.account-dropdown a,
+.account-dropdown button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.account-dropdown a:hover,
+.account-dropdown button:hover {
+  background: var(--stub);
+}
+
+.account-dropdown form { margin: 0; }

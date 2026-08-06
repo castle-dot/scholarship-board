@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ question.title }}{% endblock %}
+
+{% block content %}
+
+  <span class="thread-eyebrow">QUESTION</span>
+
+  <article class="op-post">
+    <div class="op-post-header">
+      <div class="thread-avatar lg">{{ question.author.username|first|upper }}</div>
+      <div class="op-post-meta">
+        <span class="thread-name">{{ question.author.username }}</span>
+        <span class="thread-time">{{ question.created_at|timesince }} ago</span>
+      </div>
+    </div>
+
+    {% if question.scholarship %}
+      <div class="op-post-context">about <a href="{% url 'scholarship-detail' question.scholarship.slug %}">{{ question.scholarship.title }}</a></div>
+    {% endif %}
+
+    <h1 class="op-title">{{ question.title }}</h1>
+    <p class="op-body">{{ question.body|linebreaksbr }}</p>
+  </article>
+
+  <h3 class="section-heading">{{ replies|length }} repl{{ replies|length|pluralize:"y,ies" }}</h3>
+
+  {% for reply in replies %}
+    <div class="reply-row">
+      <div class="thread-avatar">{{ reply.author.username|first|upper }}</div>
+      <div class="thread-content">
+        <div class="thread-name-row">
+          <span class="thread-name">{{ reply.author.username }}</span>
+          {% if reply.author_id == question.author_id %}<span class="op-badge">OP</span>{% endif %}
+          <span class="thread-time">{{ reply.created_at|timesince }} ago</span>
+        </div>
+        <p class="thread-text">{{ reply.body|linebreaksbr }}</p>
+      </div>
+    </div>
+  {% empty %}
+    <p class="empty-line">No replies yet — be the first.</p>
+  {% endfor %}
+
+  {% if user.is_authenticated %}
+    <form method="post" class="simple-form">
+      {% csrf_token %}
+      {{ reply_form.body }}
+      <button type="submit" class="submit-btn-sm">Reply</button>
+    </form>
+  {% else %}
+    <p class="empty-line"><a href="{% url 'login' %}">Log in</a> to reply.</p>
+  {% endif %}
+
+{% endblock %}

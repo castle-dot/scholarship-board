@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ story.title }}{% endblock %}
+
+{% block content %}
+
+  <span class="thread-eyebrow">SUCCESS STORY</span>
+
+  <article class="op-post">
+    <div class="op-post-header">
+      <div class="thread-avatar lg">{{ story.author.username|first|upper }}</div>
+      <div class="op-post-meta">
+        <span class="thread-name">{{ story.author.username }}</span>
+        <span class="thread-time">{{ story.created_at|timesince }} ago</span>
+      </div>
+    </div>
+
+    <h1 class="op-title">{{ story.title }}</h1>
+    <p class="op-body">{{ story.story|linebreaksbr }}</p>
+  </article>
+
+  <h3 class="section-heading">Comments</h3>
+
+  {% for comment in comments %}
+    <div class="comment-row">
+      <div class="thread-avatar">{{ comment.author.username|first|upper }}</div>
+      <div class="thread-content">
+        <div class="thread-name-row">
+          <span class="thread-name">{{ comment.author.username }}</span>
+          {% if comment.author_id == story.author_id %}<span class="op-badge">OP</span>{% endif %}
+          <span class="thread-time">{{ comment.created_at|timesince }} ago</span>
+        </div>
+        <p class="thread-text">{{ comment.body }}</p>
+      </div>
+    </div>
+  {% empty %}
+    <p class="empty-line">No comments yet.</p>
+  {% endfor %}
+
+  {% if user.is_authenticated %}
+    <form method="post" class="simple-form">
+      {% csrf_token %}
+      {{ comment_form.body }}
+      <button type="submit" class="submit-btn-sm">Post</button>
+    </form>
+  {% else %}
+    <p class="empty-line"><a href="{% url 'login' %}">Log in</a> to comment.</p>
+  {% endif %}
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Ask a question{% endblock %}
+
+{% block content %}
+
+  <section class="hero">
+    <span class="eyebrow">HELP DESK</span>
+    <h1>Ask a question</h1>
+    <p>You can link it to a specific scholarship, or leave that blank for a general question.</p>
+  </section>
+
+  <form class="lookup" method="post">
+    {% csrf_token %}
+    <div class="field">
+      {{ form.title.label_tag }}
+      {{ form.title }}
+      {{ form.title.errors }}
+    </div>
+    <div class="field">
+      {{ form.body.label_tag }}
+      {{ form.body }}
+      {{ form.body.errors }}
+    </div>
+    <div class="field">
+      {{ form.scholarship.label_tag }}
+      {{ form.scholarship }}
+      {{ form.scholarship.errors }}
+    </div>
+    <button type="submit">Post question</button>
+  </form>
+
+{% endblock %}

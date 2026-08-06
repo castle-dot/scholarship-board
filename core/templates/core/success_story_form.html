@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Share your success story{% endblock %}
+
+{% block content %}
+
+  <section class="hero">
+    <span class="eyebrow">ARRIVALS</span>
+    <h1>Share your story</h1>
+    <p>This goes live immediately once you post it, so please only share what you're comfortable with the public seeing.</p>
+  </section>
+
+  <form class="lookup" method="post">
+    {% csrf_token %}
+    <div class="field">
+      {{ form.title.label_tag }}
+      {{ form.title }}
+      {{ form.title.errors }}
+    </div>
+    <div class="field">
+      {{ form.story.label_tag }}
+      {{ form.story }}
+      {{ form.story.errors }}
+    </div>
+    <button type="submit">Post story</button>
+  </form>
+
+{% endblock %}

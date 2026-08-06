@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Your Profile{% endblock %}
+
+{% block content %}
+
+  <section class="hero">
+    <span class="eyebrow">PASSENGER PROFILE</span>
+    <h1>{{ user.username }}</h1>
+  </section>
+
+  <div class="profile-card">
+    <div class="name">{{ profile.bio|default:"No bio yet." }}</div>
+    <div class="meta">{% if profile.country %}Based in {{ profile.country.name }}{% else %}Location not set{% endif %}</div>
+    <a class="view-link" href="{% url 'profile-edit' %}">Edit profile →</a>
+  </div>
+
+  <h3 style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase;">
+    Your itinerary — saved scholarships
+  </h3>
+
+  {% for saved in saved_scholarships %}
+    <div class="stub-row">
+      <span class="index">{{ forloop.counter|stringformat:"02d" }}</span>
+      <div class="info">
+        <span class="route">{{ saved.scholarship.university }}</span>
+        <h4><a href="{% url 'scholarship-detail' saved.scholarship.slug %}">{{ saved.scholarship.title }}</a></h4>
+      </div>
+      <span class="badge deadline">CLOSES {{ saved.scholarship.deadline|date:"d M Y" }}</span>
+      {% include "core/_save_button.html" with scholarship=saved.scholarship is_saved=True %}
+    </div>
+  {% empty %}
+    <div class="empty-state">Nothing saved yet. Browse scholarships and tap SAVE to build your itinerary.</div>
+  {% endfor %}
+
+{% endblock %}

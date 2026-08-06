@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+
+  <section class="hero">
+    <span class="eyebrow">PASSENGER PROFILE</span>
+    <h1>Edit your profile</h1>
+  </section>
+
+  <form class="lookup" method="post">
+    {% csrf_token %}
+    <div class="field">
+      {{ form.bio.label_tag }}
+      {{ form.bio }}
+      {{ form.bio.errors }}
+    </div>
+    <div class="field">
+      {{ form.country.label_tag }}
+      {{ form.country }}
+      {{ form.country.errors }}
+    </div>
+    <button type="submit">Save</button>
+  </form>
+
+{% endblock %}

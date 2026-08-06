@@ -1,0 +1,20 @@
+{% comment %}
+Reusable save/bookmark button.
+Usage: {% include "core/_save_button.html" with scholarship=scholarship saved_ids=saved_ids %}
+  - saved_ids: (optional) a set of scholarship IDs saved by the current user, used on the list page.
+  - is_saved: (optional) a plain boolean, used on the detail page where we only have one scholarship.
+No <form> here anymore -- save-button.js intercepts the click and calls
+toggle-save-scholarship via fetch(), so nothing submits and the page never reloads.
+{% endcomment %}
+<button
+  type="button"
+  class="stamp-btn js-save-btn {% if is_saved or scholarship.id in saved_ids %}is-saved{% endif %}"
+  data-save-url="{% url 'toggle-save-scholarship' scholarship.slug %}"
+  aria-pressed="{% if is_saved or scholarship.id in saved_ids %}true{% else %}false{% endif %}"
+  aria-label="{% if is_saved or scholarship.id in saved_ids %}Remove from saved{% else %}Save this scholarship{% endif %}"
+>
+  <svg class="stamp-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4.5L5 21V4a1 1 0 0 1 1-1z"/>
+  </svg>
+  <span class="stamp-label">{% if is_saved or scholarship.id in saved_ids %}SAVED{% else %}SAVE{% endif %}</span>
+</button>

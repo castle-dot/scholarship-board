@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}{{ scholarship.title }}{% endblock %}
+
+{% block content %}
+
+  <article class="big-ticket">
+    <div class="ticket-stub">
+      {% for level in scholarship.levels.all %}
+        <span class="level-tag">{{ level.label }}</span>
+      {% endfor %}
+    </div>
+
+    <div class="ticket-body">
+      <span class="route">{{ scholarship.university }}</span>
+      <h1 class="title">{{ scholarship.title }}</h1>
+
+      <div class="tag-row">
+        <span class="badge funded">{{ scholarship.get_funding_type_display }}</span>
+        <span class="badge deadline">CLOSES {{ scholarship.deadline|date:"d M Y" }}</span>
+        <span class="badge">
+          {% if scholarship.application_fee_required %}Application fee required{% else %}No application fee{% endif %}
+        </span>
+        <span class="badge">
+          {% if scholarship.nationality_scope == "all" %}
+            Open to all nationalities
+          {% else %}
+            Open to: {% for country in scholarship.eligible_countries.all %}{{ country.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+          {% endif %}
+        </span>
+      </div>
+    </div>
+  </article>
+
+  <div class="detail-actions">
+    <a class="board-btn" href="{{ scholarship.application_link }}" target="_blank" rel="noopener noreferrer">Board now — apply →</a>
+
+    {% if user.is_authenticated %}
+      {% include "core/_save_button.html" with scholarship=scholarship is_saved=is_saved %}
+    {% endif %}
+  </div>
+
+  <section class="briefing">
+    <h3>Full briefing</h3>
+    <p>{{ scholarship.description|linebreaksbr }}</p>
+  </section>
+
+{% endblock %}
