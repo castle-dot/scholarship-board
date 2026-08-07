@@ -22,14 +22,14 @@
 
   <div class="ticket-grid">
     {% for question in page_obj %}
-      <article class="ticket">
+      <article class="ticket story-ticket">
         <div class="ticket-body">
           <span class="route">
             {{ question.author.username }} · {{ question.created_at|date:"d M Y" }}
             {% if question.scholarship %} · re: {{ question.scholarship.title }}{% endif %}
           </span>
           <h2><a href="{% url 'question-detail' question.pk %}">{{ question.title }}</a></h2>
-          <p class="excerpt">{{ question.body|truncatewords:25 }}</p>
+          <p class="excerpt">{{ question.body|truncatewords:16 }}</p>
 
           <div class="ticket-footer">
             <span class="barcode" aria-hidden="true"></span>

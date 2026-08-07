@@ -97,6 +97,18 @@ a { color: inherit; }
   letter-spacing: -0.01em;
 }
 
+.title-row { display: flex; align-items: center; gap: 8px; }
+.beta-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--stamp);
+  border: 1px solid var(--stamp);
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+
 .site-nav {
   display: flex;
   align-items: center;
@@ -161,6 +173,65 @@ a { color: inherit; }
   color: var(--muted);
 }
 .nav-link.as-button:hover { color: var(--ink); border-bottom-color: var(--stamp); }
+
+/* -------------------------------------------------------------------- */
+/* Mobile hamburger nav                                                  */
+/* -------------------------------------------------------------------- */
+
+.mobile-nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  width: 34px;
+  height: 34px;
+  border: 1px dashed var(--muted);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.hamburger-bar {
+  display: block;
+  width: 14px;
+  height: 2px;
+  margin: 0 auto;
+  background: var(--ink);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.mobile-nav-toggle.is-open .hamburger-bar:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.mobile-nav-toggle.is-open .hamburger-bar:nth-child(2) { opacity: 0; }
+.mobile-nav-toggle.is-open .hamburger-bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+@media (max-width: 640px) {
+  .mobile-nav-toggle { display: flex; order: -1; }
+
+  /* Browse/Stories/Q&A collapse into a dropdown panel under the header
+     instead of squeezing into the same row as the icons/avatar. */
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    background: var(--paper);
+    border-bottom: 2px solid var(--ink);
+    padding: 8px 24px 14px;
+    z-index: 60;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links .nav-link {
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--line);
+    font-size: 14px;
+  }
+  .nav-links .nav-link:last-child { border-bottom: none; }
+
+  .site-nav { position: relative; gap: 14px; }
+}
 
 /* -------------------------------------------------------------------- */
 /* Theme toggle                                                          */
@@ -660,3 +731,291 @@ img {
 }
 
 .account-dropdown form { margin: 0; }
+
+/* ==========================================================================
+   ADD THIS TO THE BOTTOM OF style.css
+   Replaces the old .support-card block if you added that already —
+   delete those rules (.support-card, .support-icon, .support-title,
+   .support-text) if present, this is the compact version.
+   ========================================================================== */
+
+.support-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+}
+
+.support-fab {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.support-fab:hover { transform: scale(1.08); background: var(--stamp); }
+
+.support-popup {
+  position: absolute;
+  bottom: 64px;
+  right: 0;
+  width: 280px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  padding: 16px;
+}
+
+.support-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.support-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 14px;
+}
+.support-close-btn:hover { color: var(--ink); }
+
+.support-popup-text {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+
+.support-account {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.account-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+}
+
+.account-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.account-value {
+  font-family: var(--font-body);
+  color: var(--ink);
+  text-align: right;
+  font-size: 12px;
+}
+
+.account-number {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.copy-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+.copy-btn:hover { background: var(--stamp); }
+.copy-btn.copied { background: var(--gold); }
+
+@media (max-width: 480px) {
+  .support-widget { bottom: 14px; right: 14px; }
+  .support-popup { width: calc(100vw - 48px); right: -6px; }
+  .account-row { flex-direction: column; align-items: flex-start; gap: 3px; }
+  .account-value { text-align: left; }
+}
+
+/* -------------------------------------------------------------------- */
+/* General phone-width tightening                                        */
+/* -------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .container { padding: 0 16px; }
+  .hero { padding: 32px 0 22px; }
+  .lookup { padding: 16px; margin-bottom: 28px; }
+  .lookup-grid { grid-template-columns: 1fr; }
+  .lookup button { width: 100%; margin-top: 4px; }
+
+  .wordmark .title { font-size: 20px; }
+  .wordmark .eyebrow { font-size: 10px; }
+  .nav-actions { gap: 10px; }
+
+  /* Scholarship cards: narrower stub/photo column so the title/badges
+     get enough room instead of wrapping onto 4-5 lines. */
+  .ticket-stub, .ticket-photo-link { width: 64px; }
+  .ticket::before, .ticket::after { left: 52px; }
+  .ticket-body { padding: 14px 16px; }
+  .ticket-stub .level-tag { font-size: 10px; }
+
+  .big-ticket { flex-direction: column; margin: 24px 0; }
+  .big-ticket .ticket-stub { width: 100%; height: auto; min-height: 40px; padding: 6px 12px; flex-direction: row; border-radius: var(--radius) var(--radius) 0 0; }
+  .big-ticket .stub-inner { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 6px; }
+  .big-ticket .ticket-stub .level-tag { transform: none; }
+  .big-ticket .ticket-stub::after { display: none; }
+  .big-ticket::before, .big-ticket::after { display: none; }
+  .big-ticket .ticket-body { padding: 20px; }
+  .big-ticket .ticket-body h1.title { font-size: 24px; }
+
+  .featured-ticket .ticket-body h2 { font-size: 17px; }
+
+  .ticket-footer { flex-wrap: wrap; row-gap: 10px; }
+  .footer-actions { width: 100%; justify-content: space-between; }
+
+  .detail-actions { gap: 10px; }
+}
+/* -------------------------------------------------------------------- */
+/* Featured scholarship (hero highlight) + NEW ribbon + urgency pulse   */
+/* + share buttons                                                       */
+/* -------------------------------------------------------------------- */
+
+.featured-panel {
+  margin: 32px 0 0;
+  padding: 18px 20px;
+  border: 1px dashed var(--gold);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--gold) 7%, var(--card));
+}
+.featured-panel-header { margin-bottom: 10px; }
+.featured-panel .eyebrow { color: var(--gold); }
+
+.featured-link { display: block; text-decoration: none; }
+.featured-ticket {
+  margin: 0;
+  min-height: auto;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.featured-ticket:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+.featured-ticket .ticket-stub { width: 76px; }
+.featured-ticket .ticket-stub .level-tag { font-size: 11px; }
+.featured-ticket .ticket-photo-link { width: 76px; }
+.featured-ticket .ticket-body { padding: 16px 20px; gap: 6px; }
+.featured-ticket .ticket-body h2 { font-size: 18px; margin: 0; }
+.featured-ticket .ticket-body .route { font-size: 10px; }
+.featured-ticket::before, .featured-ticket::after { left: 64px; }
+
+/* Clear break between the featured panel and the regular grid below it */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0 20px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.section-divider::before,
+.section-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+/* "NEW" ribbon -- small corner tag on any card posted in the last 48h */
+.new-ribbon {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--paper);
+  background: var(--gold);
+  padding: 3px 10px;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Urgency pulse -- added to .badge.deadline when closing within 0-3 days */
+@keyframes deadline-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--stamp) 55%, transparent); }
+  50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--stamp) 0%, transparent); }
+}
+.badge.deadline.urgent {
+  animation: deadline-pulse 1.8s ease-in-out infinite;
+}
+
+/* Share buttons -- small dashed-circle icon buttons, same visual language
+   as .stamp-btn, just smaller so they fit comfortably next to it */
+.share-group { display: flex; align-items: center; gap: 6px; }
+.share-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px dashed var(--muted); background: transparent; color: var(--muted);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; text-decoration: none; line-height: 1;
+  transition: transform 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.share-btn:hover { transform: scale(1.08); }
+.share-btn.facebook:hover { border-color: #1877F2; color: #1877F2; }
+.share-btn.telegram:hover { border-color: #29A9EA; color: #29A9EA; }
+.share-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* Story/question cards (success stories, Q&A) -- no photo column, so
+   they don't need the 168px min-height meant for scholarship cards.
+   The excerpt is clamped to 2 lines so every card in the grid ends up
+   the same height regardless of how long the original text was. */
+.story-ticket { min-height: auto; }
+.story-ticket .ticket-body { padding: 16px 20px; gap: 6px; }
+.story-ticket .ticket-footer { margin-top: 12px; }
+
+.excerpt {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* Groups the view-link + share-group + save button together on the right
+   side of the card footer, so adding share buttons doesn't fight the
+   barcode's `justify-content: space-between` placement on the left. */
+.footer-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+.detail-actions { flex-wrap: wrap; }

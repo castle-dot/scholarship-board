@@ -22,11 +22,11 @@
 
   <div class="ticket-grid">
     {% for story in page_obj %}
-      <article class="ticket">
+      <article class="ticket story-ticket">
         <div class="ticket-body">
           <span class="route">{{ story.author.username }} · {{ story.created_at|date:"d M Y" }}</span>
           <h2><a href="{% url 'story-detail' story.pk %}">{{ story.title }}</a></h2>
-          <p class="excerpt">{{ story.story|truncatewords:30 }}</p>
+          <p class="excerpt">{{ story.story|truncatewords:18 }}</p>
 
           <div class="ticket-footer">
             <span class="barcode" aria-hidden="true"></span>

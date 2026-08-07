@@ -39,7 +39,13 @@
 {# ============================================================ #}
 
 <nav class="site-nav">
-  <div class="nav-links">
+  <button type="button" id="mobile-nav-toggle" class="mobile-nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+    <span class="hamburger-bar"></span>
+    <span class="hamburger-bar"></span>
+    <span class="hamburger-bar"></span>
+  </button>
+
+  <div class="nav-links" id="nav-links">
     <a href="{% url 'scholarship-list' %}" class="nav-link {% if request.resolver_match.url_name == 'scholarship-list' %}active{% endif %}">Browse</a>
     <a href="{% url 'story-list' %}" class="nav-link {% if 'story' in request.resolver_match.url_name %}active{% endif %}">Stories</a>
     <a href="{% url 'question-list' %}" class="nav-link {% if 'question' in request.resolver_match.url_name %}active{% endif %}">Q&amp;A</a>
@@ -137,10 +143,48 @@
     <div class="container footer-bottom">
       &copy; {% now "Y" %} Kaleb. All rights reserved.
     </div>
+    
   </footer>
 
   <script src="{% static 'core/js/save-button.js' %}"></script>
   <script src="{% static 'core/js/notifications.js' %}"></script>
   <script src="{% static 'core/js/theme-toggle.js' %}"></script>
+  <script src="{% static 'core/js/support-widget.js' %}"></script>
+  <script src="{% static 'core/js/mobile-nav.js' %}"></script>
+  {# ============================================================ #}
+{# Floating support widget — place this ONCE, right before the   #}
+{# closing </body> tag in base.html (after your other <script>   #}
+{# tags is fine too, order doesn't matter here).                 #}
+{# DELETE the old _support_card.html block if you added it       #}
+{# to the footer already — this replaces it entirely.            #}
+{# ============================================================ #}
+
+<div class="support-widget" id="support-widget">
+  <div class="support-popup" id="support-popup" style="display:none;">
+    <div class="support-popup-header">
+      <span>Buy me Buna ☕</span>
+      <button type="button" class="support-close-btn" id="support-close-btn" aria-label="Close">✕</button>
+    </div>
+    <p class="support-popup-text">Support Scholarship Board directly — no fees, no middleman.</p>
+
+    <div class="support-account">
+      <div class="account-row">
+        <span class="account-label">Bank</span>
+        <span class="account-value">Commercial Bank of Ethiopia (CBE)</span>
+      </div>
+      <div class="account-row">
+        <span class="account-label">Account name</span>
+        <span class="account-value">Kaleb Getnet</span>
+      </div>
+      <div class="account-row">
+        <span class="account-label">Account number</span>
+        <span class="account-value account-number" id="account-number">1000595657311</span>
+        
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="support-fab" id="support-fab" aria-label="Support us" aria-expanded="false">☕</button>
+</div>
 </body>
 </html>

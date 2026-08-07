@@ -51,9 +51,56 @@
     </div>
   </form>
 
+  {% if featured %}
+    <div class="featured-panel">
+      <div class="featured-panel-header">
+        <span class="eyebrow">Featured — closing soonest</span>
+      </div>
+      <a href="{% url 'scholarship-detail' featured.slug %}" class="featured-link">
+        <article class="big-ticket featured-ticket">
+          {% if featured.is_new_flag %}<span class="new-ribbon">NEW</span>{% endif %}
+
+          {% if featured.logo %}
+            <a href="{% url 'scholarship-detail' featured.slug %}" class="ticket-photo-link">
+              <img class="ticket-photo" src="{{ featured.logo.url }}" alt="{{ featured.university }} logo">
+            </a>
+          {% else %}
+            <div class="ticket-stub">
+              <div class="stub-inner">
+                <span class="level-tag">FEATURED</span>
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="ticket-body">
+            <span class="route">{{ featured.university }}</span>
+            <h2>{{ featured.title }}</h2>
+
+            <div class="tag-row">
+              {% for level in featured.levels.all %}
+                <span class="badge level">{{ level.label }}</span>
+              {% endfor %}
+              <span class="badge funded">{{ featured.get_funding_type_display }}</span>
+              <span class="badge deadline {% if featured.is_closing_soon_flag %}urgent{% endif %}">CLOSES {{ featured.deadline|date:"d M Y" }}</span>
+            </div>
+          </div>
+        </article>
+      </a>
+    </div>
+
+    <div class="section-divider">
+      <span>All open scholarships</span>
+    </div>
+  {% else %}
+    <div class="section-divider">
+      <span>{% if query or selected_level or selected_funding_type or selected_country %}Results{% else %}All open scholarships{% endif %}</span>
+    </div>
+  {% endif %}
+
   <div class="ticket-grid">
     {% for scholarship in page_obj %}
       <article class="ticket">
+        {% if scholarship.is_new_flag %}<span class="new-ribbon">NEW</span>{% endif %}
         <a href="{% url 'scholarship-detail' scholarship.slug %}" class="ticket-photo-link">
           {% if scholarship.logo %}
             <img class="ticket-photo" src="{{ scholarship.logo.url }}" alt="{{ scholarship.university }} logo">
@@ -71,7 +118,7 @@
               <span class="badge level">{{ level.label }}</span>
             {% endfor %}
             <span class="badge funded">{{ scholarship.get_funding_type_display }}</span>
-            <span class="badge deadline">CLOSES {{ scholarship.deadline|date:"d M Y" }}</span>
+            <span class="badge deadline {% if scholarship.is_closing_soon_flag %}urgent{% endif %}">CLOSES {{ scholarship.deadline|date:"d M Y" }}</span>
             {% if not scholarship.application_fee_required %}
               <span class="badge">No fee</span>
             {% endif %}
@@ -79,11 +126,19 @@
 
           <div class="ticket-footer">
             <span class="barcode" aria-hidden="true"></span>
-            <a class="view-link" href="{% url 'scholarship-detail' scholarship.slug %}">View ticket →</a>
 
-            {% if user.is_authenticated %}
-              {% include "core/_save_button.html" with scholarship=scholarship saved_ids=saved_ids %}
-            {% endif %}
+            <div class="footer-actions">
+              <a class="view-link" href="{% url 'scholarship-detail' scholarship.slug %}">View ticket →</a>
+
+              <div class="share-group">
+                <a class="share-btn facebook" href="https://www.facebook.com/sharer/sharer.php?u={{ scholarship.absolute_url|urlencode }}" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook" title="Share on Facebook">📘</a>
+                <a class="share-btn telegram" href="https://t.me/share/url?url={{ scholarship.absolute_url|urlencode }}&text={{ scholarship.title|urlencode }}" target="_blank" rel="noopener noreferrer" aria-label="Share on Telegram" title="Share on Telegram">✈️</a>
+              </div>
+
+              {% if user.is_authenticated %}
+                {% include "core/_save_button.html" with scholarship=scholarship saved_ids=saved_ids %}
+              {% endif %}
+            </div>
           </div>
         </div>
       </article>

@@ -5,6 +5,8 @@
 {% block content %}
 
   <article class="big-ticket">
+    {% if scholarship.is_new_flag %}<span class="new-ribbon">NEW</span>{% endif %}
+
     <div class="ticket-stub">
       {% for level in scholarship.levels.all %}
         <span class="level-tag">{{ level.label }}</span>
@@ -17,7 +19,7 @@
 
       <div class="tag-row">
         <span class="badge funded">{{ scholarship.get_funding_type_display }}</span>
-        <span class="badge deadline">CLOSES {{ scholarship.deadline|date:"d M Y" }}</span>
+        <span class="badge deadline {% if scholarship.is_closing_soon_flag %}urgent{% endif %}">CLOSES {{ scholarship.deadline|date:"d M Y" }}</span>
         <span class="badge">
           {% if scholarship.application_fee_required %}Application fee required{% else %}No application fee{% endif %}
         </span>
@@ -34,6 +36,11 @@
 
   <div class="detail-actions">
     <a class="board-btn" href="{{ scholarship.application_link }}" target="_blank" rel="noopener noreferrer">Board now — apply →</a>
+
+    <div class="share-group">
+      <a class="share-btn facebook" href="https://www.facebook.com/sharer/sharer.php?u={{ scholarship.absolute_url|urlencode }}" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook" title="Share on Facebook">📘</a>
+      <a class="share-btn telegram" href="https://t.me/share/url?url={{ scholarship.absolute_url|urlencode }}&text={{ scholarship.title|urlencode }}" target="_blank" rel="noopener noreferrer" aria-label="Share on Telegram" title="Share on Telegram">✈️</a>
+    </div>
 
     {% if user.is_authenticated %}
       {% include "core/_save_button.html" with scholarship=scholarship is_saved=is_saved %}

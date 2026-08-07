@@ -20,7 +20,9 @@ from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.views.decorators.http import require_POST
+from datetime import timedelta
 
 from .forms import ProfileForm, QuestionForm, ReplyForm, SignupForm, SuccessStoryForm, StoryCommentForm
 from .models import (
@@ -36,6 +38,23 @@ from .models import (
 )
 
 
+
+
+def _annotate_scholarship_for_display(scholarship, request, now, today):
+    """
+    Attaches a few display-only attributes used by the templates:
+    - is_new_flag: posted within the last 48 hours -> shows the NEW ribbon
+    - is_closing_soon_flag: deadline is 0-3 days out -> urgency pulse on the badge
+    - absolute_url: full https://... link, used by the Facebook/Telegram share buttons
+
+    Plain attributes, not model fields -- nothing is saved, this just saves
+    the templates from doing date math or building absolute URLs themselves.
+    """
+    scholarship.is_new_flag = (now - scholarship.created_at) <= timedelta(hours=48)
+    days_left = (scholarship.deadline - today).days
+    scholarship.is_closing_soon_flag = 0 <= days_left <= 3
+    scholarship.absolute_url = request.build_absolute_uri(scholarship.get_absolute_url())
+    return scholarship
 
 
 def scholarship_list(request):
@@ -75,6 +94,16 @@ def scholarship_list(request):
             Q(nationality_scope="all") | Q(eligible_countries__id=selected_country)
         ).distinct()
 
+    # --- 4b. Featured pick for the hero -- only on the plain, unfiltered
+    # view. Showing it while a search/filter is active would feel
+    # disconnected from what the person actually asked for.
+    filters_active = bool(query or selected_level or selected_funding_type or selected_country)
+    featured = None
+    if not filters_active:
+        featured = scholarships.first()
+        if featured:
+            scholarships = scholarships.exclude(pk=featured.pk)
+
     # --- 5. Know which cards should show the like button as "already saved" ---
     saved_ids = set()
     if request.user.is_authenticated:
@@ -86,8 +115,17 @@ def scholarship_list(request):
     paginator = Paginator(scholarships, 12)
     page_obj = paginator.get_page(request.GET.get("page"))
 
+    # --- 7. NEW ribbon / urgency-pulse / share-link flags ---
+    now = timezone.now()
+    today = timezone.localdate()
+    for scholarship in page_obj:
+        _annotate_scholarship_for_display(scholarship, request, now, today)
+    if featured:
+        _annotate_scholarship_for_display(featured, request, now, today)
+
     context = {
         "page_obj": page_obj,
+        "featured": featured,
         "saved_ids": saved_ids,
         # for building the filter dropdowns in the template
         "levels": Level.objects.all(),
@@ -111,6 +149,8 @@ def scholarship_detail(request, slug):
         is_saved = SavedScholarship.objects.filter(
             user=request.user, scholarship=scholarship
         ).exists()
+
+    _annotate_scholarship_for_display(scholarship, request, timezone.now(), timezone.localdate())
 
     context = {
         "scholarship": scholarship,
@@ -225,7 +265,7 @@ def signup_view(request):
 
 def success_story_list(request):
     """Public board of published success stories, newest first."""
-    stories = SuccessStory.objects.filter(is_published=True).select_related("author")
+    stories = SuccessStory.objects.filter(is_published=True).select_related("author").order_by("-created_at")
     paginator = Paginator(stories, 10)
     page_obj = paginator.get_page(request.GET.get("page"))
     return render(request, "core/success_story_list.html", {"page_obj": page_obj})
@@ -261,7 +301,7 @@ def question_list(request):
     """Open Q&A board -- every question, newest first."""
     questions = Question.objects.select_related("author", "scholarship").annotate(
         reply_count=Count("replies")
-    )
+    ).order_by("-created_at")
     paginator = Paginator(questions, 15)
     page_obj = paginator.get_page(request.GET.get("page"))
     return render(request, "core/question_list.html", {"page_obj": page_obj})
