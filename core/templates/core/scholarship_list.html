@@ -61,9 +61,9 @@
           {% if featured.is_new_flag %}<span class="new-ribbon">NEW</span>{% endif %}
 
           {% if featured.logo %}
-            <a href="{% url 'scholarship-detail' featured.slug %}" class="ticket-photo-link">
-              <img class="ticket-photo" src="{{ featured.logo.url }}" alt="{{ featured.university }} logo">
-            </a>
+            <div class="ticket-photo-link">
+            <img class="ticket-photo" src="{{ featured.logo.url }}" alt="{{ featured.university }} logo">
+           </div>
           {% else %}
             <div class="ticket-stub">
               <div class="stub-inner">
